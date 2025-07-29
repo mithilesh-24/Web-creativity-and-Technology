@@ -137,6 +137,102 @@ void askQuestion(const Question& q, const std::string& playerName, int& score, i
     std::cout << "📏 Distance moved: " << move << " units\n\n";
     setColor(15, 0);
 }
+void delayMilliseconds(int milliseconds) {
+    auto start = std::chrono::high_resolution_clock::now();
+    while (true) {
+        auto now = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+        if (duration.count() >= milliseconds)
+            break;
+        }
+    }
 
+//to display the current position of the car
+void moveCar(int position, int trackLength, const std::string& playerName, const std::string& icon) {
+    int dup = 0;
+
+    std::cout << playerName << "'s Race Track:\n";
+
+    while (dup <= position) {
+        std::cout << "\r";  
+
+        std::cout << "Start🏳️";
+
+        for (int i = 0; i < trackLength; i++) {
+            if (i == dup)
+                std::cout << icon;
+            else
+                std::cout << "__";
+        }
+
+        std::cout << "Finish🏁";
+        std::cout.flush();
+
+        delayMilliseconds(100);
+        dup++;
+    }
+
+    std::cout << "\n";
+}
+
+
+
+
+
+
+const int TRACK_LENGTH = 50;
+
+    //to simulate race
+    void simulateRace(double u, double a, double d, std::string carSymbol, const std::string& playerName) {
+        double v2 = u * u + 2 * a * d;
+        bool survived = (v2 <= 0);
+    
+        
+        std::cout << "\n" << playerName << "'s starts in...\n";
+        for(int i = 3; i >= 1; --i) {
+            std::cout << i << "\a\n";
+            delayMilliseconds(1000);
+        }
+        std::cout << "GO!\a\n\n";
+        
+        
+        double s = 0;
+        double t = 0;
+        const double dt = 0.1;
+        int pos;
+        while (s < d && t < 20 ) {
+            if (s >= d || s < 0) break;
+            pos = static_cast<int>((s / d) * TRACK_LENGTH);
+            if (pos > TRACK_LENGTH - 1) pos = TRACK_LENGTH - 1;
+            std::cout << "🛖";
+            for (int i = 0; i < TRACK_LENGTH; ++i) {
+                if (i == pos)
+                    std::cout << carSymbol;
+                else
+                    std::cout << "_";
+        }
+            std::cout << "🧝\r";
+
+            std::cout.flush();
+            
+            delayMilliseconds(100);
+    
+            s = u * t + 0.5 * a * t * t;
+            t += dt;
+        }
+        
+        std::cout << "\n";
+        
+        if (survived && pos<40){
+            Beep(1000, 200);
+            std::cout << playerName << " guess is right ✅\a\n";
+            std::cout<<"acceleration guess is right : "<<a<<"\n";
+        }
+        else{
+            Beep(1000,200);
+            std::cout << playerName << " guess is wrong💥\a\n";
+            std::cout<<"acceleration guess is wrong : "<<a<<"\n";
+        }
+}
 
 
